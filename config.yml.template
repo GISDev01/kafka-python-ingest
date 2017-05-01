@@ -1,0 +1,4 @@
+kafka:
+    hostname: 'localhost'
+    port: '5432'
+    topicname: 'test1'
