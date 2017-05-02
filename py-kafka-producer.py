@@ -1,10 +1,10 @@
 import logging
 import threading
 import time
+import json
 
 import yaml
-from kafka import KafkaConsumer, KafkaProducer
-
+from kafka import KafkaProducer
 
 with open("config.yml", 'r') as yaml_config_file:
     config = yaml.load(yaml_config_file)
@@ -24,31 +24,18 @@ class Producer(threading.Thread):
     daemon = True
 
     def run(self):
-        producer = KafkaProducer(bootstrap_servers='localhost:9092')
+        producer = KafkaProducer(value_serializer=lambda m: json.dumps(m).encode('ascii'),
+                                 bootstrap_servers='localhost:9092')
 
-        while True:
-            producer.send('topic1', b"Topic1 Test3 Bytes String")
-            producer.send('topic1', b"Test Msg 3----")
-            time.sleep(5)
-
-
-class Consumer(threading.Thread):
-    daemon = True
-
-    def run(self):
-        consumer = KafkaConsumer(bootstrap_servers='localhost:9092',
-                                 auto_offset_reset='earliest')
-        consumer.subscribe(['topic1'])
-
-        for message in consumer:
-            print(message)
-            print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(message.timestamp / 1000.0)))
+        producer.send('topic3', {'key1': 'value1'})
+        print('Sent Messages')
+        time.sleep(1)
+        self.run()
 
 
 def main():
     threads = [
-        Producer(),
-        Consumer()
+        Producer()
     ]
 
     for t in threads:
