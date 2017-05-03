@@ -11,10 +11,13 @@ channel = connection.channel()
 queue_name = 'test-queue-1'
 channel.queue_declare(queue=queue_name)
 
+# can list this queue in a shell with: sudo rabbitmqctl list_queues
+
+
 channel.basic_publish(exchange='',
                       routing_key=queue_name,
-                      body='Message 1')
+                      body='Message 3')
 
-print(" [x] Sent 'Message 1'")
+print("Sent 'Message 3'")
 
 connection.close()
