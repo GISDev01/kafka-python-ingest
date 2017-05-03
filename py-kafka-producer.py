@@ -20,22 +20,37 @@ db_user = config['database']['user']
 db_pwd = config['database']['pwd']
 
 
-class Producer(threading.Thread):
+class Producer1(threading.Thread):
     daemon = True
 
     def run(self):
         producer = KafkaProducer(value_serializer=lambda m: json.dumps(m).encode('ascii'),
                                  bootstrap_servers='localhost:9092')
 
-        producer.send('topic3', {'key1': 'value1'})
-        print('Sent Messages')
-        time.sleep(1)
+        producer.send('topic3', {'Producer1': 'value1'})
+        print('Sent Prod1 Message')
+        time.sleep(3)
         self.run()
+
+
+class Producer2(threading.Thread):
+    daemon = True
+
+    def run(self):
+        producer = KafkaProducer(value_serializer=lambda m: json.dumps(m).encode('ascii'),
+                                 bootstrap_servers='localhost:9092')
+
+        producer.send('topic3', {'Producer2': 'value2'})
+        print('Sent Prod2 Message')
+        time.sleep(2)
+        self.run()
+
 
 
 def main():
     threads = [
-        Producer()
+        Producer1(),
+        Producer2()
     ]
 
     for t in threads:

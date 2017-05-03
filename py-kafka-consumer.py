@@ -22,15 +22,23 @@ db_pwd = config['database']['pwd']
 class Consumer(threading.Thread):
     daemon = True
 
-    def run(self):
-        consumer = KafkaConsumer("topic3", group_id="group1",
-                                 bootstrap_servers='localhost:9092')
-        for message in consumer:
-            print(message)
-            print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(message.timestamp / 1000.0)))
+    consumer = KafkaConsumer("topic3", group_id="group1",
+                             bootstrap_servers='localhost:9092',
+                             enable_auto_commit=True)
+    for message in consumer:
+        print(message)
+        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(message.timestamp / 1000.0)))
 
 
 def main():
+    # consumer = KafkaConsumer("topic3", group_id="group1",
+    #                          bootstrap_servers='localhost:9092')
+    # for message in consumer:
+    #     print(message)
+    #     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(message.timestamp / 1000.0)))
+
+
+
     threads = [
         Consumer()
     ]
@@ -39,8 +47,8 @@ def main():
         t.start()
         logger.info('Thread started')
 
-    logger.info('Sleeping for 100 seconds')
-    time.sleep(100)
+    # logger.info('Sleeping for 100 seconds')
+    #time.sleep(100)
 
 
 if __name__ == "__main__":
